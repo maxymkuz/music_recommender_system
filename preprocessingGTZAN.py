@@ -17,7 +17,7 @@ parser.add_argument("--data_dir", type=str)
 parser.add_argument("--store_dir", type=str)
 parser.add_argument("--sampling_rate", default=22050, type=int)
 
-def extract_spectrogram(values, clip, target):
+def extract_spectrogram(values, clip, target, filename):
 	num_channels = 3
 	window_sizes = [25, 50, 100]
 	hop_sizes = [10, 25, 50]
@@ -38,6 +38,7 @@ def extract_spectrogram(values, clip, target):
 
 	new_entry = {}
 	# new_entry["audio"] = clip.numpy()
+	new_entry["filename"] = filename
 	new_entry["values"] = np.array(specs)
 	new_entry["target"] = target
 	values.append(new_entry)
@@ -48,7 +49,7 @@ def extract_features(audios):
 			clip, sr = librosa.load(audio["name"], sr=args.sampling_rate)
 		except:
 			continue
-		extract_spectrogram(values, clip, audio["class_idx"])
+		extract_spectrogram(values, clip, audio["class_idx"], audio["name"])
 		print("Finished audio {}".format(audio))
 	return values
 if __name__=="__main__":
